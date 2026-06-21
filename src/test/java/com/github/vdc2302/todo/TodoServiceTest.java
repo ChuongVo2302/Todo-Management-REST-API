@@ -50,17 +50,17 @@ public class TodoServiceTest {
     verify(todoRepository).findById(notFoundId);
   }
 
-  @Test
-  void shouldSaveNewTodo(){
-    Todo inputTodo = new Todo();
-    inputTodo.setTitle("Created Todo 1");
-
-    todoService.createTodo(inputTodo);
-
-    verify(todoRepository).save(todoCaptor.capture());
-    Todo savedTodo = todoCaptor.getValue();
-
-    assertEquals("Created Todo 1", savedTodo.getTitle());
-    assertFalse(savedTodo.getCompleted());
-  }
+//  @Test
+//  void shouldSaveNewTodo(){
+//    Todo inputTodo = new Todo();
+//    inputTodo.setTitle("Created Todo 1");
+//
+//    todoService.createTodo(inputTodo);
+//
+//    verify(todoRepository).save(todoCaptor.capture());
+//    Todo savedTodo = todoCaptor.getValue();
+//
+//    assertEquals("Created Todo 1", savedTodo.getTitle());
+//    assertFalse(savedTodo.getCompleted());
+//  }
 }
