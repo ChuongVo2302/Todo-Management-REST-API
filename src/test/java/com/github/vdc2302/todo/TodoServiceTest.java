@@ -28,7 +28,7 @@ public class TodoServiceTest {
 
   @Test
   void testGetTodoById(){
-    Todo todo = new Todo(1L, "todo 1", "description for todo 1", false);
+    Todo todo = new Todo(1L, "todo 1", "description for todo 1", false, null);
     when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
 
     Todo result = todoService.getTodoById(1L);

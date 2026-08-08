@@ -58,7 +58,7 @@ public class TodoService {
     Todo existingTodo = getTodoById(id);
 
     existingTodo.setTitle(todo.getTitle());
-    existingTodo.setDescription(todo.getTitle());
+    existingTodo.setDescription(todo.getDescription());
     existingTodo.setCompleted(todo.getCompleted());
 
     Todo savedTodo = todoRepository.save(existingTodo);
