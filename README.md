@@ -41,4 +41,6 @@ DB_PASSWORD=postgres_password
 ```
 
 ## Run the Application
-`mvn spring-boot:run`
+`docker compose up -d`
+
+`API will be available at http://localhost:8080`
