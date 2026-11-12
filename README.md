@@ -28,19 +28,45 @@ todo-app/
 
 ```
 ## Running the Application
-### 1. Prerequisites
-- Install PostgresSQL and create a database named `todo_db`.
-- Install JDK 17 or higher.
 
-## Environment Setup
-Create a `.env` file in the root directory and use your database credentials:
+### 1. Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (includes Docker Compose)
+
+That's it — the jar is built inside Docker and PostgreSQL runs in a container,
+so you don't need Java, Maven or PostgreSQL installed.
+
+### 2. Environment Setup
+Copy the example env file and fill in your values:
+```
+cp .env.example .env        # macOS / Linux / Git Bash
+copy .env.example .env      # Windows cmd / PowerShell
+```
 ```
 DB_URL=jdbc:postgresql://localhost:5432/todo_db
-DB_USERNAME=postgres_username
-DB_PASSWORD=postgres_password
+DB_USERNAME=postgres
+DB_PASSWORD=change_me
+JWT_SECRET=<a long random string, 32+ characters>
 ```
 
-## Run the Application
-`docker compose up -d`
+### 3. Run
+```
+docker compose up -d --build
+```
+API will be available at http://localhost:8080
 
-`API will be available at http://localhost:8080`
+Useful commands:
+```
+docker compose logs -f todo-api   # view app logs
+docker compose down               # stop containers (data is kept)
+docker compose down -v            # stop and delete the database data
+```
+
+> If you change `DB_USERNAME`/`DB_PASSWORD` after the first run, run
+> `docker compose down -v` once so Postgres is re-created with the new credentials.
+
+### Running without Docker (for development)
+Requires JDK 17+. Start only the database, then run the app with Maven:
+```
+docker compose up -d todo-db
+./mvnw spring-boot:run       # Windows: .\mvnw.cmd spring-boot:run
+```
