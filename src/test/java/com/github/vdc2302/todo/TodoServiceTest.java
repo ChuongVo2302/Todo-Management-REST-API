@@ -1,13 +1,19 @@
 package com.github.vdc2302.todo;
 
+import com.github.vdc2302.todo.dto.Response.TodoResponseDTO;
+import com.github.vdc2302.todo.exception.ResourceNotFoundException;
+import com.github.vdc2302.todo.mapper.TodoMapper;
 import com.github.vdc2302.todo.model.Todo;
 import com.github.vdc2302.todo.repository.TodoRepository;
+import com.github.vdc2302.todo.repository.UserRepository;
 import com.github.vdc2302.todo.service.TodoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -18,8 +24,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class TodoServiceTest {
 
+  private static final String USERNAME = "user1";
+
   @Mock
   private TodoRepository todoRepository;
+
+  @Mock
+  private UserRepository userRepository;
+
+  @Spy
+  private TodoMapper todoMapper = Mappers.getMapper(TodoMapper.class);
 
   @InjectMocks
   private TodoService todoService;
@@ -29,25 +43,26 @@ public class TodoServiceTest {
   @Test
   void testGetTodoById(){
     Todo todo = new Todo(1L, "todo 1", "description for todo 1", false, null);
-    when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
+    when(todoRepository.findByIdAndUserUsername(1L, USERNAME)).thenReturn(Optional.of(todo));
 
-    Todo result = todoService.getTodoById(1L);
+    TodoResponseDTO result = todoService.getTodoById(1L, USERNAME);
 
-    assertEquals("todo 1", result.getTitle());
-    assertEquals("description for todo 1", result.getDescription());
-    assertEquals(false, result.getCompleted());
-    verify(todoRepository).findById(1L);
+    assertEquals(1L, result.id());
+    assertEquals("todo 1", result.title());
+    assertEquals("description for todo 1", result.description());
+    assertEquals(false, result.completed());
+    verify(todoRepository).findByIdAndUserUsername(1L, USERNAME);
   }
 
   @Test
   void shouldThrowExceptionWhenTodoNotFound(){
     Long notFoundId = 123L;
-    when(todoRepository.findById(notFoundId)).thenReturn(Optional.empty());
+    when(todoRepository.findByIdAndUserUsername(notFoundId, USERNAME)).thenReturn(Optional.empty());
 
-    RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-      todoService.getTodoById(notFoundId);
+    assertThrows(ResourceNotFoundException.class, () -> {
+      todoService.getTodoById(notFoundId, USERNAME);
     });
-    verify(todoRepository).findById(notFoundId);
+    verify(todoRepository).findByIdAndUserUsername(notFoundId, USERNAME);
   }
 
 //  @Test
