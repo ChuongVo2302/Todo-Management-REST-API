@@ -25,6 +25,7 @@ public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final UserDetailsService userDetailsService;
+  private final SecurityErrorHandler securityErrorHandler;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,10 +33,15 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/v1/auth/**").permitAll()
+            .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
         )
         .sessionManagement(sess -> sess
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .exceptionHandling(ex -> ex
+            .authenticationEntryPoint(securityErrorHandler) // 401: missing or invalid token
+            .accessDeniedHandler(securityErrorHandler)      // 403: valid token, wrong role
         )
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class

@@ -3,6 +3,7 @@ package com.github.vdc2302.todo.mapper;
 import com.github.vdc2302.todo.dto.Request.TodoCreateDTO;
 import com.github.vdc2302.todo.dto.Request.TodoPatchDTO;
 import com.github.vdc2302.todo.dto.Request.TodoUpdateDTO;
+import com.github.vdc2302.todo.dto.Response.AdminTodoResponseDTO;
 import com.github.vdc2302.todo.dto.Response.TodoResponseDTO;
 import com.github.vdc2302.todo.model.Todo;
 import org.mapstruct.*;
@@ -15,6 +16,9 @@ public interface TodoMapper {
     Todo toEntity(TodoCreateDTO dto);
 
     TodoResponseDTO toResponseDto(Todo todo);
+
+    @Mapping(source = "user.username", target = "username")
+    AdminTodoResponseDTO toAdminResponseDto(Todo todo);
 
     //put
     @Mapping(target = "id", ignore = true)
