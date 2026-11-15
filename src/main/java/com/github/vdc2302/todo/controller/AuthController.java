@@ -1,6 +1,7 @@
 package com.github.vdc2302.todo.controller;
 
 import com.github.vdc2302.todo.jwt.JwtService;
+import com.github.vdc2302.todo.model.Role;
 import com.github.vdc2302.todo.model.User;
 import com.github.vdc2302.todo.repository.UserRepository;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class AuthController {
     user.setUsername(request.getUsername());
 
     user.setPassword(passwordEncoder.encode(request.getPassword()));
-    user.setRole("ROLE_USER");
+    user.setRole(Role.ROLE_USER);
     userRepository.save(user);
 
     UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
